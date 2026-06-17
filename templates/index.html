@@ -1,10 +1,13 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VideoToAudio | Profesyonel MP4'ten MP3'e Dönüştürücü</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>VideoToAudio | Professional MP4 to MP3 Converter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=300;400;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js"></script>
+
     <style>
         :root {
             --bg-color: #0B1120;
@@ -14,16 +17,10 @@
             --primary: #3B82F6;
             --primary-hover: #2563EB;
             --success: #10B981;
-            --success-hover: #059669;
             --border-color: #374151;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-color);
@@ -34,10 +31,9 @@
             min-height: 100vh;
             background-image: radial-gradient(circle at top right, #1e3a8a20, transparent 40%),
                               radial-gradient(circle at bottom left, #4c1d9520, transparent 40%);
-            padding-bottom: 70px; /* Alttaki yapışkan reklam alanı için boşluk */
+            padding-bottom: 70px;
         }
 
-        /* --- Üst Bilgi (Header) --- */
         header {
             width: 100%;
             padding: 15px 0;
@@ -56,7 +52,6 @@
             -webkit-text-fill-color: transparent;
         }
 
-        /* --- Gelişmiş Üç Kolonlu Düzen (Masaüstü için) --- */
         .page-layout {
             display: flex;
             justify-content: center;
@@ -87,18 +82,9 @@
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
         }
 
-        .card h2 {
-            font-size: 1.6rem;
-            margin-bottom: 8px;
-        }
+        .card h2 { font-size: 1.6rem; margin-bottom: 8px; }
+        .card p.subtitle { color: var(--text-muted); margin-bottom: 20px; font-size: 0.9rem; }
 
-        .card p.subtitle {
-            color: var(--text-muted);
-            margin-bottom: 20px;
-            font-size: 0.9rem;
-        }
-
-        /* --- Sürükle Bırak Alanı --- */
         .upload-zone {
             border: 2px dashed var(--border-color);
             background: rgba(55, 65, 81, 0.3);
@@ -108,36 +94,13 @@
             transition: all 0.3s ease;
         }
 
-        .upload-zone.dragover {
-            border-color: var(--primary);
-            background: rgba(59, 130, 246, 0.1);
-        }
+        .upload-zone.dragover { border-color: var(--primary); background: rgba(59, 130, 246, 0.1); }
+        .upload-zone:hover { border-color: #60A5FA; }
+        .upload-icon { width: 44px; height: 44px; fill: var(--text-muted); margin-bottom: 12px; }
+        .upload-text { font-size: 1rem; font-weight: 600; }
+        .upload-text span { color: var(--primary); }
+        input[type="file"] { display: none; }
 
-        .upload-zone:hover {
-            border-color: #60A5FA;
-        }
-
-        .upload-icon {
-            width: 44px;
-            height: 44px;
-            fill: var(--text-muted);
-            margin-bottom: 12px;
-        }
-
-        .upload-text {
-            font-size: 1rem;
-            font-weight: 600;
-        }
-
-        .upload-text span {
-            color: var(--primary);
-        }
-
-        input[type="file"] {
-            display: none;
-        }
-
-        /* --- Butonlar --- */
         .btn {
             background: linear-gradient(135deg, var(--primary), #4F46E5);
             color: white;
@@ -153,11 +116,9 @@
             transition: all 0.2s;
         }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 12px rgba(59, 130, 246, 0.3);
-        }
-
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 12px rgba(59, 130, 246, 0.3); }
+        .btn:disabled { background: #4b5563; cursor: not-allowed; transform: none; box-shadow: none; }
+        
         .btn-success {
             background: linear-gradient(135deg, var(--success), #059669);
             text-decoration: none;
@@ -169,12 +130,7 @@
             color: white;
         }
 
-        /* --- Yükleme Animasyonu --- */
-        .status-container {
-            display: none;
-            margin-top: 25px;
-        }
-
+        .status-container { display: none; margin-top: 25px; }
         .spinner {
             width: 45px;
             height: 45px;
@@ -184,10 +140,9 @@
             animation: spin 1s linear infinite;
             margin: 0 auto 12px;
         }
-
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* --- 💸 GELİŞMİŞ REKLAM STATİK ALANLARI 💸 --- */
+        /* --- 💸 ADSENSE PLACEMENTS 💸 --- */
         .ad-banner {
             background: rgba(31, 41, 55, 0.4);
             border: 1px dashed var(--border-color);
@@ -199,78 +154,22 @@
             font-size: 0.75rem;
             letter-spacing: 1px;
         }
-
-        /* Yatay Bannerlar (Üst ve Alt) */
-        .ad-horizontal {
-            width: 100%;
-            max-width: 728px;
-            min-height: 90px;
-            margin: 15px 0;
-        }
-
-        /* Kart İçi Doğal (Native) Reklam */
-        .ad-native {
-            width: 100%;
-            min-height: 80px;
-            background: rgba(15, 23, 42, 0.6);
-            margin-bottom: 20px;
-            border-radius: 6px;
-        }
-
-        /* Dikey Yan Reklamlar (Skyscraper) */
-        .ad-sidebar {
-            width: 160px;
-            min-height: 600px;
-            position: sticky;
-            top: 80px;
-        }
-
-        /* Sabit/Yapışkan En Alt Reklam (Sticky Footer) */
+        .ad-horizontal { width: 100%; max-width: 728px; min-height: 90px; margin: 15px 0; }
+        .ad-native { width: 100%; min-height: 80px; background: rgba(15, 23, 42, 0.6); margin-bottom: 20px; border-radius: 6px; }
+        .ad-sidebar { width: 160px; min-height: 600px; position: sticky; top: 80px; }
         .ad-sticky-footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            min-height: 60px;
-            background: #070b14;
-            border-top: 1px solid var(--border-color);
-            box-shadow: 0 -4px 10px rgba(0,0,0,0.5);
-            z-index: 999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            position: fixed; bottom: 0; left: 0; width: 100%; min-height: 60px; background: #070b14;
+            border-top: 1px solid var(--border-color); box-shadow: 0 -4px 10px rgba(0,0,0,0.5); z-index: 999;
+            display: flex; justify-content: center; align-items: center;
         }
-
         .ad-sticky-footer .ad-content {
-            width: 100%;
-            max-width: 728px;
-            height: 50px;
-            border: 1px dashed #4b5563;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.75rem;
-            color: var(--text-muted);
+            width: 100%; max-width: 728px; height: 50px; border: 1px dashed #4b5563;
+            display: flex; align-items: center; justify-content: center; font-size: 0.75rem; color: var(--text-muted);
         }
 
-        /* --- Footer --- */
-        footer {
-            width: 100%;
-            padding: 20px 0;
-            text-align: center;
-            border-top: 1px solid var(--border-color);
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            margin-top: auto;
-        }
+        footer { width: 100%; padding: 20px 0; text-align: center; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.8rem; margin-top: auto; }
 
-        /* --- RESPONSIVE (Mobil Uyumluluk) --- */
-        @media (max-width: 1100px) {
-            /* Ekran küçüldüğünde yan dikey reklamları gizle, ortayı genişlet */
-            .ad-sidebar {
-                display: none !important;
-            }
-        }
+        @media (max-width: 1100px) { .ad-sidebar { display: none !important; } }
     </style>
 </head>
 <body>
@@ -280,86 +179,71 @@
     </header>
 
     <div class="page-layout">
-        
-        <div class="ad-banner ad-sidebar">
-            <span>YOL REKLAM<br>[160x600 SOL]</span>
-        </div>
+        <div class="ad-banner ad-sidebar"><span>SKYSCRAPER AD<br>[160x600 LEFT]</span></div>
 
         <div class="main-wrapper">
-            
-            <div class="ad-banner ad-horizontal">
-                <span>[ GOOGLE ADSENSE ÜST REKLAM ALANI 728x90 ]</span>
-            </div>
+            <div class="ad-banner ad-horizontal"><span>[ GOOGLE ADSENSE TOP AD ZONE 728x90 ]</span></div>
 
             <div class="card">
-                <h2>MP4'ü MP3'e Dönüştür</h2>
-                <p class="subtitle">Videonuzun sesini saniyeler içinde kalite kaybı olmadan çıkarın.</p>
+                <h2>Convert MP4 to MP3</h2>
+                <p class="subtitle">Extract high-quality audio from videos of any size, instantly in your browser.</p>
 
-                <div class="ad-banner ad-native">
-                    <span>[ KART İÇİ DOĞAL REKLAM ALANI ]</span>
+                <div class="ad-banner ad-native"><span>[ IN-CARD NATIVE AD ZONE ]</span></div>
+
+                <div class="upload-zone" id="dropZone" onclick="document.getElementById('videoInput').click()">
+                    <svg class="upload-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.36 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
+                    </svg>
+                    <p class="upload-text" id="fileLabel">Drag & drop your file here or <span>Browse</span></p>
+                    <input type="file" id="videoInput" accept="video/mp4">
                 </div>
-
-                <form id="uploadForm">
-                    <div class="upload-zone" id="dropZone" onclick="document.getElementById('videoInput').click()">
-                        <svg class="upload-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.36 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
-                        </svg>
-                        <p class="upload-text" id="fileLabel">Dosyayı buraya sürükleyin veya <span>Seçin</span></p>
-                        <input type="file" id="videoInput" name="video" accept="video/mp4">
-                    </div>
-                    
-                    <button type="submit" id="convertBtn" class="btn">Dönüştürmeyi Başlat</button>
-                </form>
+                
+                <button id="convertBtn" class="btn">Convert to MP3</button>
 
                 <div class="status-container" id="statusContainer">
                     <div class="spinner"></div>
-                    <p style="font-weight: 600;">Ses dosyası hazırlanıyor...</p>
+                    <p id="statusText" style="font-weight: 600;">Preparing conversion engine...</p>
                 </div>
 
                 <div id="resultContainer" style="display:none; margin-top: 20px;">
-                    <h3 style="color: var(--text-main); margin-bottom: 10px;">İşlem Başarılı!</h3>
-                    <a href="#" id="downloadLink" class="btn-success">MP3 Dosyasını İndir</a>
+                    <h3 style="color: var(--text-main); margin-bottom: 10px;">Conversion Successful!</h3>
+                    <a href="#" id="downloadLink" class="btn-success">Download MP3 File</a>
                 </div>
             </div>
 
-            <div class="ad-banner ad-horizontal">
-                <span>[ GOOGLE ADSENSE ALT REKLAM ALANI 728x90 ]</span>
-            </div>
-
+            <div class="ad-banner ad-horizontal"><span>[ GOOGLE ADSENSE BOTTOM AD ZONE 728x90 ]</span></div>
         </div>
 
-        <div class="ad-banner ad-sidebar">
-            <span>YOL REKLAM<br>[160x600 SAĞ]</span>
-        </div>
-
-    </div>
-    <div class="ad-sticky-footer">
-        <div class="ad-content">
-            <span>[ SABİT ALT REKLAM - MOBİL VE MASAÜSTÜ YÜKSEK KAZANÇ ]</span>
-        </div>
+        <div class="ad-banner ad-sidebar"><span>SKYSCRAPER AD<br>[160x600 RIGHT]</span></div>
     </div>
 
-    <footer>
-        <p>&copy; 2026 VideoToAudio. Tüm hakları saklıdır.</p>
-    </footer>
+    <div class="ad-sticky-footer"><div class="ad-content"><span>[ STICKY FOOTER AD ]</span></div></div>
+
+    <footer><p>&copy; 2026 VideoToAudio. All rights reserved.</p></footer>
 
     <script>
+        const { createFFmpeg, fetchFile } = FFmpeg;
+        const ffmpeg = createFFmpeg({ log: false });
+
         const videoInput = document.getElementById('videoInput');
         const fileLabel = document.getElementById('fileLabel');
         const convertBtn = document.getElementById('convertBtn');
-        const uploadForm = document.getElementById('uploadForm');
         const statusContainer = document.getElementById('statusContainer');
+        const statusText = document.getElementById('statusText');
         const resultContainer = document.getElementById('resultContainer');
         const downloadLink = document.getElementById('downloadLink');
         const dropZone = document.getElementById('dropZone');
 
+        let selectedFile = null;
+
         function handleFile(file) {
             if (file && file.type === "video/mp4") {
-                fileLabel.innerHTML = `Seçilen: <span style="color: var(--success);">${file.name}</span>`;
+                selectedFile = file;
+                fileLabel.innerHTML = `Selected: <span style="color: var(--success);">${file.name}</span>`;
                 convertBtn.style.display = "block";
                 resultContainer.style.display = "none";
             } else {
-                alert("Lütfen geçerli bir MP4 dosyası seçin.");
+                alert("Please select a valid MP4 file.");
             }
         }
 
@@ -369,47 +253,56 @@
         dropZone.addEventListener('drop', (e) => {
             e.preventDefault();
             dropZone.classList.remove('dragover');
-            if (e.dataTransfer.files.length > 0) {
-                videoInput.files = e.dataTransfer.files;
-                handleFile(e.dataTransfer.files[0]);
-            }
+            if (e.dataTransfer.files.length > 0) { handleFile(e.dataTransfer.files[0]); }
         });
 
-        uploadForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            if(videoInput.files.length === 0) return;
-
-            const formData = new FormData();
-            formData.append('video', videoInput.files[0]);
+        convertBtn.addEventListener('click', async () => {
+            if (!selectedFile) return;
 
             convertBtn.style.display = "none";
             dropZone.style.display = "none";
             statusContainer.style.display = "block";
-            resultContainer.style.display = "none";
+            statusText.innerText = "Loading conversion engine (This may take a moment on the first run)...";
 
-            fetch('/convert', { method: 'POST', body: formData })
-            .then(response => response.json())
-            .then(data => {
-                statusContainer.style.display = "none";
-                if (data.success) {
-                    downloadLink.href = data.download_url;
-                    resultContainer.style.display = "block";
-                    setTimeout(() => { 
-                        dropZone.style.display = "block"; 
-                        fileLabel.innerHTML = 'Dosyayı buraya sürükleyin veya <span>Seçin</span>'; 
-                    }, 6000);
-                } else {
-                    alert("Hata: " + data.error);
-                    convertBtn.style.display = "block";
-                    dropZone.style.display = "block";
+            try {
+                if (!ffmpeg.isLoaded()) {
+                    await ffmpeg.load();
                 }
-            })
-            .catch(error => {
+
+                statusText.innerText = "Processing video, extracting audio... (Please wait)";
+
+                ffmpeg.FS('writeFile', 'input.mp4', await fetchFile(selectedFile));
+
+                await ffmpeg.run('-i', 'input.mp4', '-vn', '-acodec', 'libmp3lame', '-ab', '192k', 'output.mp3');
+
+                statusText.innerText = "Preparing your download...";
+
+                const data = ffmpeg.FS('readFile', 'output.mp3');
+                const audioBlob = new Blob([data.buffer], { type: 'audio/mp3' });
+                const audioUrl = URL.createObjectURL(audioBlob);
+
+                downloadLink.href = audioUrl;
+                downloadLink.download = selectedFile.name.replace('.mp4', '.mp3');
+
                 statusContainer.style.display = "none";
-                convertBtn.style.display = "block";
+                resultContainer.style.display = "block";
+
+                ffmpeg.FS('unlink', 'input.mp4');
+                ffmpeg.FS('unlink', 'output.mp3');
+
+                setTimeout(() => {
+                    dropZone.style.display = "block";
+                    fileLabel.innerHTML = 'Drag & drop your file here or <span>Browse</span>';
+                    selectedFile = null;
+                }, 8000);
+
+            } catch (error) {
+                console.error(error);
+                alert("An error occurred during conversion: " + error.message);
+                statusContainer.style.display = "none";
                 dropZone.style.display = "block";
-                alert("Bir hata oluştu.");
-            });
+                convertBtn.style.display = "block";
+            }
         });
     </script>
 </body>
