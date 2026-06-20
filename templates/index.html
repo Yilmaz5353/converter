@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VideoToAudio | Professional MP4 to MP3 Converter</title>
     
-    <!-- 🎯 GOOGLE ADSENSE CODE -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6826893749612512" crossorigin="anonymous"></script>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght=300;400;600;700&display=swap" rel="stylesheet">
     
-    <!-- 🚀 FFmpeg.wasm Browser Library -->
     <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js"></script>
 
     <style>
@@ -26,6 +24,7 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
+        
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-color);
@@ -36,7 +35,6 @@
             min-height: 100vh;
             background-image: radial-gradient(circle at top right, #1e3a8a20, transparent 40%),
                               radial-gradient(circle at bottom left, #4c1d9520, transparent 40%);
-            padding-bottom: 70px;
         }
 
         header {
@@ -147,34 +145,15 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* --- 💸 ADSENSE PLACEMENTS 💸 --- */
-        .ad-banner {
-            background: rgba(31, 41, 55, 0.4);
-            border: 1px dashed var(--border-color);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-muted);
-            font-size: 0.75rem;
-            letter-spacing: 1px;
+        footer { 
+            width: 100%; 
+            padding: 20px 0; 
+            text-align: center; 
+            border-top: 1px solid var(--border-color); 
+            color: var(--text-muted); 
+            font-size: 0.8rem; 
+            margin-top: auto; 
         }
-        .ad-horizontal { width: 100%; max-width: 728px; min-height: 90px; margin: 15px 0; }
-        .ad-native { width: 100%; min-height: 80px; background: rgba(15, 23, 42, 0.6); margin-bottom: 20px; border-radius: 6px; }
-        .ad-sidebar { width: 160px; min-height: 600px; position: sticky; top: 80px; }
-        .ad-sticky-footer {
-            position: fixed; bottom: 0; left: 0; width: 100%; min-height: 60px; background: #070b14;
-            border-top: 1px solid var(--border-color); box-shadow: 0 -4px 10px rgba(0,0,0,0.5); z-index: 999;
-            display: flex; justify-content: center; align-items: center;
-        }
-        .ad-sticky-footer .ad-content {
-            width: 100%; max-width: 728px; height: 50px; border: 1px dashed #4b5563;
-            display: flex; align-items: center; justify-content: center; font-size: 0.75rem; color: var(--text-muted);
-        }
-
-        footer { width: 100%; padding: 20px 0; text-align: center; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.8rem; margin-top: auto; }
-
-        @media (max-width: 1100px) { .ad-sidebar { display: none !important; } }
     </style>
 </head>
 <body>
@@ -184,19 +163,10 @@
     </header>
 
     <div class="page-layout">
-        <!-- AD 1: SKYSCRAPER LEFT -->
-        <div class="ad-banner ad-sidebar"><span>SKYSCRAPER AD<br>[160x600 LEFT]</span></div>
-
         <div class="main-wrapper">
-            <!-- AD 2: TOP BANNER -->
-            <div class="ad-banner ad-horizontal"><span>[ GOOGLE ADSENSE TOP AD ZONE 728x90 ]</span></div>
-
             <div class="card">
                 <h2>Convert MP4 to MP3</h2>
                 <p class="subtitle">Extract high-quality audio from videos of any size, instantly in your browser.</p>
-
-                <!-- AD 3: IN-CARD NATIVE AD -->
-                <div class="ad-banner ad-native"><span>[ IN-CARD NATIVE AD ZONE ]</span></div>
 
                 <div class="upload-zone" id="dropZone" onclick="document.getElementById('videoInput').click()">
                     <svg class="upload-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -208,29 +178,18 @@
                 
                 <button id="convertBtn" class="btn">Convert to MP3</button>
 
-                <!-- Status / Loading -->
                 <div class="status-container" id="statusContainer">
                     <div class="spinner"></div>
                     <p id="statusText" style="font-weight: 600;">Preparing conversion engine...</p>
                 </div>
 
-                <!-- Result -->
                 <div id="resultContainer" style="display:none; margin-top: 20px;">
                     <h3 style="color: var(--text-main); margin-bottom: 10px;">Conversion Successful!</h3>
                     <a href="#" id="downloadLink" class="btn-success">Download MP3 File</a>
                 </div>
             </div>
-
-            <!-- AD 4: BOTTOM BANNER -->
-            <div class="ad-banner ad-horizontal"><span>[ GOOGLE ADSENSE BOTTOM AD ZONE 728x90 ]</span></div>
         </div>
-
-        <!-- AD 5: SKYSCRAPER RIGHT -->
-        <div class="ad-banner ad-sidebar"><span>SKYSCRAPER AD<br>[160x600 RIGHT]</span></div>
     </div>
-
-    <!-- AD 6: STICKY FOOTER -->
-    <div class="ad-sticky-footer"><div class="ad-content"><span>[ STICKY FOOTER AD ]</span></div></div>
 
     <footer><p>&copy; 2026 VideoToAudio. All rights reserved.</p></footer>
 
